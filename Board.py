@@ -1,70 +1,113 @@
 import pygame
 from pygame.locals import *
 
-margin = 60
-sides = 11
-size = sides * margin
 
-pygame.init()
-window = pygame.display.set_mode((size, size))
-canvas = window.copy()
+class Angel:
+    def __init__(self, sides):
+        self.sides = sides
+        self.position = int(sides / 2) * sides + int(sides / 2)
+        self.escaped = False
 
-angel = int(sides / 2) * sides + int(sides / 2)
-devils = []
+    def has_escaped(self):
+        return self.escaped
 
-black = (0, 0, 0, 255)
-white = (255, 255, 255)
-gray = (220, 220, 220)
-silver = (192, 192, 192)
-red = (255, 0, 0)
+    def get_position(self):
+        return self.position
 
-
-def rect_equ(index):
-    coord_y = int(index / sides) * margin
-    coord_x = (index % sides) * margin
-    return coord_x, coord_y, margin, margin
-
-
-def angel_move(angel, move):
-    for barrier in devils:
-        if barrier == (angel + move):
-            return angel
-    return angel + move
+    def angel_move(self, all_devils, move):
+        for barrier in all_devils.get_positions():
+            if barrier == (self.position + move):
+                return
+        if self.position + move < 0 or self.position + move > self.sides ** 2 - 1:
+            self.escaped = True
+            return
+        if (self.position % self.sides == self.sides - 1 and (self.position + move) % self.sides == 0) or (
+                            self.position % self.sides == 0 and (self.position + move) % self.sides == self.sides - 1):
+            self.escaped = True
+            return
+        self.position += move
 
 
-running = True
-while running:
-    window.fill(white)
-    # grid
-    for side in range(0, size, margin):
-        pygame.draw.lines(window, gray, False, ((side, 0), (side, size)))
-        pygame.draw.lines(window, gray, False, ((0, side), (size, side)))
+class Devils:
+    def __init__(self):
+        self.positions = []
 
-    # angel
-    pygame.draw.rect(window, silver, (rect_equ(angel)))
+    def get_positions(self):
+        return self.positions
 
-    # devil barriers
-    for barrier in devils:
-        pygame.draw.rect(window, red, (rect_equ(barrier)))
+    def add_devil(self, angel_position, position):
+        if angel_position == position:
+            return
+        self.positions.append(position)
 
-    for e in pygame.event.get():
-        if e.type == pygame.MOUSEBUTTONUP:
-            pos = pygame.mouse.get_pos()
-            x_box = int(pos[0] / margin)
-            y_box = int(pos[1] / margin)
-            index = x_box + sides * y_box
-            devils.append(index)
 
-        if e.type == pygame.KEYDOWN:
-            if e.key == K_RIGHT:
-                angel = angel_move(angel, 1)
-            if e.key == K_LEFT:
-                angel = angel_move(angel, -1)
-            if e.key == K_UP:
-                angel = angel_move(angel, -sides)
-            if e.key == K_DOWN:
-                angel = angel_move(angel, sides)
-        if e.type == pygame.QUIT:
-            running = False
+class Board:
+    def __init__(self, margin, sides):
+        self.margin = margin
+        self.sides = sides
+        self.size = self.sides * self.margin
 
-    pygame.display.update()
+        pygame.init()
+        self.window = pygame.display.set_mode((self.size, self.size))
+        self.canvas = self.window.copy()
+        self.running = True
+
+        self.black = (0, 0, 0, 255)
+        self.white = (255, 255, 255)
+        self.gray = (220, 220, 220)
+        self.silver = (192, 192, 192)
+        self.red = (255, 0, 0)
+
+        self.angel = Angel(self.sides)
+        self.devils = Devils()
+
+    def rect_equ(self, position):
+        return (
+            (position % self.sides) * self.margin, int(position / self.sides) * self.margin, self.margin, self.margin)
+
+    def is_running(self):
+        return self.running
+
+    def run(self):
+        self.window.fill(self.white)
+        # grid
+        for side in range(0, self.size, self.margin):
+            pygame.draw.lines(self.window, self.gray, False, ((side, 0), (side, self.size)))
+            pygame.draw.lines(self.window, self.gray, False, ((0, side), (self.size, side)))
+
+        # angel
+        if not self.angel.has_escaped():
+            # noinspection PyTypeChecker
+            pygame.draw.rect(self.window, self.silver, self.rect_equ(self.angel.get_position()))
+
+        # devil barriers
+        for devil in self.devils.get_positions():
+            pygame.draw.rect(self.window, self.red, (self.rect_equ(devil)))
+
+        for e in pygame.event.get():
+            if e.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                x_box = int(pos[0] / self.margin)
+                y_box = int(pos[1] / self.margin)
+                box_index = x_box + self.sides * y_box
+                self.devils.add_devil(self.angel.get_position(), box_index)
+
+            if e.type == pygame.KEYDOWN:
+                if e.key == K_RIGHT:
+                    self.angel.angel_move(self.devils, 1)
+                if e.key == K_LEFT:
+                    self.angel.angel_move(self.devils, -1)
+                if e.key == K_UP:
+                    self.angel.angel_move(self.devils, -self.sides)
+                if e.key == K_DOWN:
+                    self.angel.angel_move(self.devils, self.sides)
+            if e.type == pygame.QUIT:
+                self.running = False
+
+        pygame.display.update()
+
+
+if __name__ == "__main__":
+    board = Board(60, 11)
+    while board.is_running():
+        board.run()
