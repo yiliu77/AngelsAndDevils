@@ -17,7 +17,7 @@ class NeuralNetwork:
 
     def train(self, inputs_list, targets_list):
         input_array = numpy.array(inputs_list, ndmin=2).T
-        target_array = numpy.array(targets_list, ndmin=2).T
+        target_array = numpy.array(targets_list)
 
         hidden_inputs = numpy.dot(self.wih, input_array)
         hidden_outputs = self.activation_function(hidden_inputs)
@@ -26,14 +26,20 @@ class NeuralNetwork:
         final_outputs = self.activation_function(final_inputs)
 
         for i in range(self.o_nodes):
-            if target_array[i] is None:
-                target_array[i] = final_outputs[i]
+            if target_array[i,0] is None:
+                target_array[i,0] = final_outputs[i,0]
         output_errors = target_array - final_outputs
         hidden_errors = numpy.dot(self.who.T, output_errors)
 
-        self.who += self.lr * (output_errors * final_outputs * (1.0 - final_outputs)) * numpy.transpose(hidden_outputs)
-        self.wih += self.lr * numpy.dot((hidden_errors * hidden_outputs * (1.0 - hidden_outputs)),
-                                        numpy.transpose(input_array))
+        print(((output_errors * final_outputs *
+                               (1.0 - final_outputs)) * numpy.transpose(hidden_outputs)).shape)
+        print(self.who.shape)
+        numpy.add(self.who, self.lr * (output_errors * final_outputs *
+                               (1.0 - final_outputs)) * \
+                    numpy.transpose(
+                        hidden_outputs))
+        numpy.add(self.wih, self.lr * numpy.dot((hidden_errors * hidden_outputs * (1.0 - hidden_outputs)),
+                                        numpy.transpose(input_array)))
         pass
 
     def query(self, input_list):

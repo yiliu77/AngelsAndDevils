@@ -7,7 +7,7 @@ class Angel:
         self.sides = sides
         self.position = int(sides / 2) * sides + int(sides / 2)
         # initially in the center
-        self.moves = [self.position]
+        self.moves = []
 
         self.escaped = False
 
@@ -24,22 +24,13 @@ class Angel:
         return self.escaped
 
     def get_position(self):
-        if self.escaped:
-            return None
         return self.position
 
     def get_moves(self):
         return self.moves
 
-    def is_trapped(self, all_devils):
-        if self.position - self.sides in all_devils.get_positions() and self.position + self.sides in \
-                all_devils.get_positions() and self.position - 1 in all_devils.get_positions() and self.position + 1 \
-                in all_devils.get_positions():
-            return True
-        return False
-
-    def angel_move(self, all_devils, move):
-        if (self.position + move) in all_devils.get_positions():
+    def angel_move(self, all_blocks, move, move_direction):
+        if (self.position + move) in all_blocks.get_positions():
             return False
         if self.position + move < 0 or self.position + move > self.sides ** 2 - 1:
             self.escaped = True
@@ -47,12 +38,15 @@ class Angel:
                             self.position % self.sides == 0 and (self.position + move) % self.sides == self.sides - 1):
             self.escaped = True
         self.position += move
-        self.moves.append(self.position)
+        self.moves.append(move_direction)
         return True
+
+    def query(self, board):
+        return self.consciousness.query(board)
 
     def train(self, boards, has_won):
         win_error = 1 if has_won else 0
         for i in range(len(boards)):
             reinforced_error = np.array([None, None, None, None]).reshape(4, 1)
-            reinforced_error[self.moves[i]] = win_error
+            reinforced_error[self.moves[i], 0] = win_error
             self.consciousness.train(boards[i], reinforced_error)

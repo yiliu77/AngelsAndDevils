@@ -19,5 +19,8 @@ class Devil:
         self.blocks = Blocks()
         self.sides = sides
 
-    def place_block(self, angel):
+    def place_block(self, angel, all_blocks):
         random_place = random.randrange(0, self.sides ** 2)
+        while angel.get_position() == random_place or random_place in all_blocks.get_positions():
+            random_place = random.randrange(0, self.sides ** 2)
+        return random_place
