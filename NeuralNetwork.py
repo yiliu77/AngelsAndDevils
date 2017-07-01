@@ -31,9 +31,6 @@ class NeuralNetwork:
         output_errors = target_array - final_outputs
         hidden_errors = numpy.dot(self.who.T, output_errors)
 
-        print(((output_errors * final_outputs *
-                               (1.0 - final_outputs)) * numpy.transpose(hidden_outputs)).shape)
-        print(self.who.shape)
         numpy.add(self.who, self.lr * (output_errors * final_outputs *
                                (1.0 - final_outputs)) * \
                     numpy.transpose(

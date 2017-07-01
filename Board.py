@@ -29,7 +29,7 @@ class Board:
         self.blocks = Blocks()
         self.winner = None
 
-        self.board_pos = [self.representation()]
+        self.board_pos = []
 
     def get_angel(self):
         return self.angel
@@ -47,6 +47,12 @@ class Board:
         return (
             (position % self.sides) * self.margin, int(position / self.sides) * self.margin, self.margin, self.margin)
 
+    def reset(self):
+        self.angel.reset()
+        self.blocks = Blocks()
+        self.winner = None
+        self.board_pos = []
+
     def representation(self):
         board_rep = []
         for i in range(self.sides ** 2):
@@ -57,12 +63,6 @@ class Board:
             else:
                 board_rep.append(0)
         return board_rep
-
-    # def train_angel(self):
-    #     self.machinery()
-    #
-    #     angel.query()
-    #     return True
 
     def machinery(self):
         if self.angel.has_escaped():
@@ -84,8 +84,6 @@ class Board:
                 pygame.draw.rect(self.window, self.red, (self.rect_equ(devil)))
 
     def players_play(self):
-        self.machinery()
-
         for e in pygame.event.get():
             if e.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
@@ -106,11 +104,10 @@ class Board:
                     move = self.angel.angel_move(self.blocks, self.sides, 2)
                 if not move:
                     self.winner = "devil"
+        self.machinery()
         pygame.display.update()
 
     def angels_turn(self):
-        self.machinery()
-
         turn = self.angel.query(self.representation())
         move = 0
         if np.argmax(turn) == 0:
@@ -124,6 +121,7 @@ class Board:
         move = self.angel.angel_move(self.blocks, move, np.argmax(turn))
         if not move:
             self.winner = "devil"
+        self.machinery()
         self.board_pos.append(self.representation())
 
     def train_angel(self, winner):

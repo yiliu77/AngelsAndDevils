@@ -29,7 +29,13 @@ class Angel:
     def get_moves(self):
         return self.moves
 
+    def reset(self):
+        self.moves = []
+        self.position = int(self.sides / 2) * self.sides + int(self.sides / 2)
+        self.escaped = False
+
     def angel_move(self, all_blocks, move, move_direction):
+        self.moves.append(move_direction)
         if (self.position + move) in all_blocks.get_positions():
             return False
         if self.position + move < 0 or self.position + move > self.sides ** 2 - 1:
@@ -38,7 +44,6 @@ class Angel:
                             self.position % self.sides == 0 and (self.position + move) % self.sides == self.sides - 1):
             self.escaped = True
         self.position += move
-        self.moves.append(move_direction)
         return True
 
     def query(self, board):
