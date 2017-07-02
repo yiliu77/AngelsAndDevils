@@ -6,10 +6,8 @@ class Angel:
     def __init__(self, sides):
         self.sides = sides
         self.position = int(sides / 2) * sides + int(sides / 2)
-        # initially in the center
         self.moves = []
-
-        self.escaped = False
+        self.board_pos = []
 
         input_nodes = sides ** 2
         hidden_nodes = 200
@@ -20,38 +18,47 @@ class Angel:
         self.consciousness = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, weight_wih, weight_who,
                                            learning_rate)
 
-    def has_escaped(self):
-        return self.escaped
+    def get_last_move(self):
+        if not len(self.moves) == 0:
+            return self.moves[len(self.moves) - 1]
 
     def get_position(self):
         return self.position
 
-    def get_moves(self):
-        return self.moves
-
     def reset(self):
-        self.moves = []
         self.position = int(self.sides / 2) * self.sides + int(self.sides / 2)
-        self.escaped = False
+        self.moves = []
+        self.board_pos = []
 
-    def angel_move(self, all_blocks, move, move_direction):
-        self.moves.append(move_direction)
-        if (self.position + move) in all_blocks.get_positions():
-            return False
-        if self.position + move < 0 or self.position + move > self.sides ** 2 - 1:
-            self.escaped = True
-        if (self.position % self.sides == self.sides - 1 and (self.position + move) % self.sides == 0) or (
-                            self.position % self.sides == 0 and (self.position + move) % self.sides == self.sides - 1):
-            self.escaped = True
+    def god_move(self, move):
+        if move == -self.sides:
+            self.moves.append(0)
+        if move == 1:
+            self.moves.append(1)
+        if move == self.sides:
+            self.moves.append(2)
+        if move == -1:
+            self.moves.append(3)
         self.position += move
-        return True
 
-    def query(self, board):
-        return self.consciousness.query(board)
+    def angel_move(self, board):
+        self.board_pos.append(board)
 
-    def train(self, boards, has_won):
+        turn = np.argmax(self.consciousness.query(board))
+        if np.argmax(turn) == 0:
+            self.position = -self.sides
+        if np.argmax(turn) == 1:
+            self.position = 1
+        if np.argmax(turn) == 2:
+            self.position = self.sides
+        if np.argmax(turn) == 3:
+            self.position = -1
+        self.moves.append(turn)
+
+
+    def train(self, has_won):
         win_error = 1 if has_won else 0
-        for i in range(len(boards)):
+        for i in range(len(self.board_pos)):
             reinforced_error = np.array([None, None, None, None]).reshape(4, 1)
             reinforced_error[self.moves[i], 0] = win_error
-            self.consciousness.train(boards[i], reinforced_error)
+            self.consciousness.train(self.board_pos[i], reinforced_error)
