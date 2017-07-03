@@ -35,11 +35,11 @@ class Board:
         board_rep = []
         for i in range(self.sides ** 2):
             if i == self.angel.get_position():
-                board_rep.append(1)
+                board_rep.append(0.99)
             elif i in self.devil.get_blocks():
                 board_rep.append(0.5)
             else:
-                board_rep.append(0)
+                board_rep.append(0.01)
         return board_rep
 
     def check_winner(self, current_player):
@@ -50,11 +50,12 @@ class Board:
                 self.winner = "angel"
             elif self.angel.get_last_move() == 1 and self.angel.get_position() % self.sides == 0:
                 self.winner = "angel"
-            elif self.angel.get_position() <0 or self.angel.get_position() > self.sides ** 2 - 1:
+            elif self.angel.get_position() < 0 or self.angel.get_position() > self.sides ** 2 - 1:
                 self.winner = "angel"
 
     def players_play(self):
         self.window.fill(self.white)
+
         # grid
         for side in range(0, self.side_length, self.margin):
             pygame.draw.lines(self.window, self.gray, False, ((side, 0), (side, self.side_length)))
@@ -90,16 +91,23 @@ class Board:
 
     def angels_turn(self):
         self.angel.angel_move(self.representation())
+        self.check_winner("angel")
+
+    def devils_turn(self):
+        self.devil.place_block(self.angel.get_position())
+        self.check_winner("devil")
 
     def train_angel(self):
         self.angel.train(self.winner)
 
-    def devils_turn(self):
-        self.devil.place_block(self.angel.get_position())
-
     def get_winner(self):
         return self.winner
 
+    # TODO Remove
+    def get_angel(self):
+        return self.angel
+
     def rect_equ(self, position):
         return (
-            (position % self.sides) * self.margin, int(position / self.sides) * self.margin, self.margin, self.margin)
+            (position % self.sides) * self.margin, int(position / self.sides) * self.margin, self.margin,
+            self.margin)
