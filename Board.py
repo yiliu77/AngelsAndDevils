@@ -35,9 +35,9 @@ class Board:
         board_rep = []
         for i in range(self.sides ** 2):
             if i == self.angel.get_position():
-                board_rep.append(0.99)
-            elif i in self.devil.get_blocks():
                 board_rep.append(0.5)
+            elif i in self.devil.get_blocks():
+                board_rep.append(0.99)
             else:
                 board_rep.append(0.01)
         return board_rep

@@ -29,10 +29,10 @@ class NeuralNetwork:
         for k in range(len(self.inputs)):
             move = np.argmax(self.final_outputs[k])
 
-            target_array = self.final_outputs[k]
+            target_array = np.array(self.final_outputs[k])
             target_array[move] = 0.99 if has_won else 0.01
 
-            output_errors = target_array - self.final_outputs[k]
+            output_errors = target_array - np.array(self.final_outputs[k])
             hidden_errors = np.dot(self.who.T, output_errors)
 
             # error1 = (output_errors * final_outputs *
