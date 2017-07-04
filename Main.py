@@ -36,6 +36,8 @@ print(slope)
 plt.show()
 
 board.init_draw()
+board.display_board()
+board.angels_turn()
 while True:
     board.display_board()
     pressed = board.button_pressed()
