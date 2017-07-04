@@ -12,7 +12,7 @@ class Angel:
         input_nodes = int(sides ** 2)
         hidden_nodes = 140
         output_nodes = 4
-        learning_rate = 0.8
+        learning_rate = 0.3
         weight_wih = np.random.randn(hidden_nodes,
                                      int(input_nodes)) \
                      / np.sqrt(input_nodes)
