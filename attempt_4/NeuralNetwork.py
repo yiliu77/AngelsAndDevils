@@ -30,10 +30,9 @@ class NeuralNetwork:
         for k in range(len(self.inputs)):
             move = np.argmax(self.final_outputs[k])
 
-            target_array = np.array([0.5, 0.5, 0.5, 0.5]).reshape(4,1)
-            target_array[move] = 0.99 if has_won else 0.01
+            target_array = 0.99 if has_won else 0.01
 
-            output_errors = target_array - np.array(self.final_outputs[k])
+            output_errors = target_array - self.final_outputs[k]
             hidden_errors = np.dot(self.who.T, output_errors)
 
             # error1 = (output_errors * final_outputs *
@@ -54,6 +53,17 @@ class NeuralNetwork:
     # get AI decision
     def query(self, input_list):
         input_list = np.array(input_list, ndmin=2).T
+
+
+        hidden_inputs = np.dot(self.wih, input_list)
+        hidden_outputs = self.sigmoid(hidden_inputs)
+
+        final_inputs = np.dot(self.who, hidden_outputs)
+        final_outputs = self.sigmoid(final_inputs)
+
+        return final_outputs
+    def save(self, input_list):
+        input_list = np.array(input_list, ndmin=2).T
         self.inputs.append(input_list)
 
         hidden_inputs = np.dot(self.wih, input_list)
@@ -64,7 +74,6 @@ class NeuralNetwork:
         final_outputs = self.sigmoid(final_inputs)
         self.final_outputs.append(final_outputs)
 
-        return final_outputs
 
     def return_wih(self):
         return self.wih

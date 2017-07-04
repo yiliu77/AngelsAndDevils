@@ -2,7 +2,7 @@ import pygame
 from Devil import Devil
 from pygame.locals import *
 
-from Angel import Angel
+from attempt_4.Angel import Angel
 
 
 class Board:
@@ -40,7 +40,7 @@ class Board:
             elif i in self.devil.get_blocks():
                 board_rep.append(0.99)
             else:
-                board_rep.append(0.0)
+                board_rep.append(0.01)
         return board_rep
 
     def check_winner(self, current_player):
@@ -108,51 +108,7 @@ class Board:
     def get_angel(self):
         return self.angel
 
-    def get_devil(self):
-        return self.devil
-
     def rect_equ(self, position):
         return (
             (position % self.sides) * self.margin, int(position / self.sides) * self.margin, self.margin,
             self.margin)
-
-    def init_draw(self):
-        pygame.init()
-        self.window = pygame.display.set_mode((self.side_length, self.side_length))
-        self.canvas = self.window.copy()
-
-
-        self.black = (0, 0, 0, 255)
-        self.white = (255, 255, 255)
-        self.gray = (220, 220, 220)
-        self.silver = (192, 192, 192)
-        self.red = (255, 0, 0)
-
-    def display_board(self):
-        self.window.fill(self.white)
-
-        # grid
-        for side in range(0, self.side_length, self.margin):
-            pygame.draw.lines(self.window, self.gray, False, ((side, 0), (side, self.side_length)))
-            pygame.draw.lines(self.window, self.gray, False, ((0, side), (self.side_length, side)))
-
-        # angel
-        if self.winner is None:
-            pygame.draw.rect(self.window, self.silver, self.rect_equ(self.angel.get_position()))
-
-        # devil barriers
-        for devil in self.devil.get_blocks():
-            pygame.draw.rect(self.window, self.red, (self.rect_equ(devil)))
-
-        pygame.display.update()
-
-    def button_pressed(self):
-        for e in pygame.event.get():
-            if e.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                x_box = int(pos[0] / self.margin)
-                y_box = int(pos[1] / self.margin)
-                box_index = x_box + self.sides * y_box
-                self.devil.god_place(box_index)
-                return True
-        return False

@@ -1,6 +1,6 @@
 import numpy as np
 
-from NeuralNetwork import NeuralNetwork
+from attempt_4.NeuralNetwork import NeuralNetwork
 
 
 class Angel:
@@ -12,7 +12,7 @@ class Angel:
         input_nodes = int(sides ** 2)
         hidden_nodes = 140
         output_nodes = 4
-        learning_rate = 0.8
+        learning_rate = 0.1
         weight_wih = np.random.randn(hidden_nodes,
                                      int(input_nodes)) \
                      / np.sqrt(input_nodes)
@@ -47,14 +47,13 @@ class Angel:
     # only for AI mode
     def angel_move(self, board):
         turn = np.argmax(self.consciousness.query(board))
-        # print(str(self.position)+"  "+str(turn))
-        if turn == 0:
+        if np.argmax(turn) == 0:
             self.position += -self.sides
-        if turn == 1:
+        if np.argmax(turn) == 1:
             self.position += 1
-        if turn == 2:
+        if np.argmax(turn) == 2:
             self.position += self.sides
-        if turn == 3:
+        if np.argmax(turn) == 3:
             self.position += -1
         self.moves.append(turn)
 
