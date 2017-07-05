@@ -1,6 +1,7 @@
 from NeuralNetwork import NeuralNetwork
 import numpy as np
 
+
 class Devil:
     def __init__(self, sides):
         self.blocks = []

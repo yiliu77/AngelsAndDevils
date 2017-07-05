@@ -2,7 +2,7 @@ import pygame
 from devil_training.Devil import Devil
 from pygame.locals import *
 
-from Angel import Angel
+from devil_training.Angel import Angel
 
 
 class Board:
@@ -97,7 +97,7 @@ class Board:
         pygame.display.update()
 
     def angels_turn(self):
-        self.angel.angel_move(self.representation())
+        self.angel.angel_move(self.representation(), self.devil.get_blocks())
         self.check_winner("angel")
 
     def devils_turn(self):

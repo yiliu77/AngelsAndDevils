@@ -6,7 +6,7 @@ from Angel import Angel
 
 
 class Board:
-    def __init__(self, margin, sides, display=True):
+    def __init__(self, margin, sides, display=True, angel_train = False):
         self.margin = margin
         self.sides = sides
         self.side_length = self.sides * self.margin
@@ -23,7 +23,9 @@ class Board:
             self.silver = (192, 192, 192)
             self.red = (255, 0, 0)
 
-        self.angel = Angel(self.sides)
+        self.angel = Angel(self.sides, angel_train)
+
+
         self.devil = Devil(self.sides)
         self.winner = None
         self.reason = None
@@ -138,7 +140,6 @@ class Board:
         pygame.init()
         self.window = pygame.display.set_mode((self.side_length, self.side_length))
         self.canvas = self.window.copy()
-
 
         self.black = (0, 0, 0, 255)
         self.white = (255, 255, 255)

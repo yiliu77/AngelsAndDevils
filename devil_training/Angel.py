@@ -31,14 +31,16 @@ class Angel:
         self.position += move
 
     # only for AI mode
-    def angel_move(self, board):
+    def angel_move(self, board, devils):
         turn = random.randrange(0, 4)
-        if turn == 0:
+        if turn == 0 and self.position - self.sides not in devils:
             self.position += -self.sides
-        if turn == 1:
+        elif turn == 1 and self.position + 1 not in devils:
             self.position += 1
-        if turn == 2:
+        elif turn == 2 and self.position + self.sides not in devils:
             self.position += self.sides
-        if turn == 3:
+        elif turn == 3 and self.position - 1 not in devils:
             self.position += -1
+        else:
+            self.position += -self.sides
         self.moves.append(turn)

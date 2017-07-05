@@ -4,7 +4,7 @@ from NeuralNetwork import NeuralNetwork
 
 
 class Angel:
-    def __init__(self, sides):
+    def __init__(self, sides, trained = False):
         self.sides = sides
         self.position = int(sides / 2) * sides + int(sides / 2)
         self.moves = []
@@ -13,10 +13,24 @@ class Angel:
         hidden_nodes = 140
         output_nodes = 4
         learning_rate = 0.2
-        weight_wih = np.random.randn(hidden_nodes,
-                                     int(input_nodes)) \
-                     / np.sqrt(input_nodes)
-        weight_who = np.random.randn(output_nodes, hidden_nodes) / np.sqrt(hidden_nodes)
+
+        if not trained:
+            weight_wih = np.random.randn(hidden_nodes,
+                                         int(input_nodes)) \
+                         / np.sqrt(input_nodes)
+            weight_who = np.random.randn(output_nodes, hidden_nodes) / np.sqrt(hidden_nodes)
+        else:
+            angel_who = open("Files/angel_who.csv", 'r')
+            angel_who_read = angel_who.readlines()
+            angel_who.close()
+
+            angel_wih = open("Files/angel_wih.csv", 'r')
+            angel_wih_read = angel_wih.readlines()
+            angel_wih.close()
+
+            weight_wih = np.asfarray([line.split(',') for line in angel_wih_read])
+            weight_who = np.asfarray([line.split(',') for line in angel_who_read])
+
         self.consciousness = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, weight_wih, weight_who,
                                            learning_rate)
 
@@ -49,10 +63,10 @@ class Angel:
 
     def get_who(self):
         return self.consciousness.who
+
     # only for AI mode
     def angel_move(self, board):
         turn = np.argmax(self.consciousness.query(board))
-        # print(str(self.position)+"  "+str(turn))
         if turn == 0:
             self.position += -self.sides
         if turn == 1:

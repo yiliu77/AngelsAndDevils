@@ -36,17 +36,10 @@ class NeuralNetwork:
             output_errors = target_array - np.array(self.final_outputs[k])
             hidden_errors = np.dot(self.who.T, output_errors)
 
-            # error1 = (output_errors * final_outputs *
-            #                        (1.0 - final_outputs)) * numpy.transpose(hidden_outputs)
-            # error2 = numpy.dot((hidden_errors * hidden_outputs * (1.0 - hidden_outputs)),
-            #                                 numpy.transpose(input_array))
             who_update += (output_errors * self.final_outputs[k] *
                            (1.0 - self.final_outputs[k])) * np.transpose(self.hidden_outputs[k])
             wih_update += np.dot((hidden_errors * self.hidden_outputs[k] * (1.0 - self.hidden_outputs[k])),
                                  np.transpose(self.inputs[k]))
-        # print("================================================")
-        # print(who_update)
-        # print(wih_update)
         self.who += self.lr * who_update
         self.wih += self.lr * wih_update
         pass
