@@ -3,6 +3,7 @@ import random
 
 class Devil:
     def __init__(self, sides):
+        # self.blocks = [39, 43, 31,32,80,76,75,74,45]
         self.blocks = []
         self.sides = sides
 
@@ -29,3 +30,4 @@ class Devil:
                 random_place = angel_pos - 1
             random_dir = random.randrange(0, 4)
         self.blocks.append(random_place)
+        return

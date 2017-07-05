@@ -44,11 +44,6 @@ class Angel:
             self.moves.append(3)
         self.position += move
 
-    def get_wih(self):
-        return self.consciousness.wih
-
-    def get_who(self):
-        return self.consciousness.who
     # only for AI mode
     def angel_move(self, board):
         turn = np.argmax(self.consciousness.query(board))

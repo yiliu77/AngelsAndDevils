@@ -30,7 +30,7 @@ class NeuralNetwork:
         for k in range(len(self.inputs)):
             move = np.argmax(self.final_outputs[k])
 
-            target_array = 0.5 * np.ones((self.o_nodes, 1))
+            target_array = np.array([0.5, 0.5, 0.5, 0.5]).reshape(4,1)
             target_array[move] = 0.99 if has_won else 0.01
 
             output_errors = target_array - np.array(self.final_outputs[k])

@@ -1,5 +1,6 @@
-from NeuralNetwork import NeuralNetwork
+import random
 import numpy as np
+from devil_training.NeuralNetwork import NeuralNetwork
 
 class Devil:
     def __init__(self, sides):
@@ -10,21 +11,10 @@ class Devil:
         hidden_nodes = 160
         output_nodes = int(sides ** 2)
         learning_rate = 0.2
-
-        devil_who = open("Files/devil_who.csv", 'r')
-        devil_who_read = devil_who.readlines()
-        devil_who.close()
-
-        devil_wih = open("Files/devil_wih.csv", 'r')
-        devil_wih_read = devil_wih.readlines()
-        devil_wih.close()
-
-        # weight_wih = np.random.randn(hidden_nodes,
-        #                              int(input_nodes)) \
-        #              / np.sqrt(input_nodes)
-        # weight_who = np.random.randn(output_nodes, hidden_nodes) / np.sqrt(hidden_nodes)
-        weight_wih = np.asfarray([line.split(',') for line in devil_wih_read])
-        weight_who = np.asfarray([line.split(',') for line in devil_who_read])
+        weight_wih = np.random.randn(hidden_nodes,
+                                     int(input_nodes)) \
+                     / np.sqrt(input_nodes)
+        weight_who = np.random.randn(output_nodes, hidden_nodes) / np.sqrt(hidden_nodes)
         self.consciousness = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, weight_wih, weight_who,
                                            learning_rate)
 
