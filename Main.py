@@ -10,15 +10,14 @@ from Board import Board
 #     if winner is not None:
 #         print(winner)
 #         break
-print("angel")
 board = Board(60, 9, False)
 ratios = []
 winners = {"angel": 0, "devil": 0}
 winner = None
 for i in range(80000):
     while winner is None:
-        board.angels_turn()
         board.devils_turn()
+        board.angels_turn()
         winner = board.get_winner()
     winners[winner] += 1
 
