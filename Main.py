@@ -14,18 +14,44 @@ if selection == "1":
         done = board.players_play()
         winner = board.get_winner()
         if winner is not None or done:
-            print(winner)
+            print("===================")
+            print("Winner: " + winner)
+            print("Reason: " + board.get_reason())
+            print("===================")
             break
 
 if selection == "2":
     board = Board(60, 9, True, False)
     board.init_draw()
+    board.angels_turn()
     while True:
         board.display_board()
-        pressed = board.button_pressed()
+        pressed = board.god_as_devil()
+        winner = board.get_winner()
         if pressed is True:
             board.angels_turn()
+        if winner is not None:
+            print("===================")
+            print("Winner: " + winner)
+            print("Reason: " + board.get_reason())
+            print("===================")
+            break
 
+if selection == "3":
+    board = Board(60, 9, False, True)
+    board.init_draw()
+    while True:
+        board.display_board()
+        move = board.god_as_angel()
+        winner = board.get_winner()
+        if move is True:
+            board.devils_turn()
+        if winner is not None:
+            print("===================")
+            print("Winner: " + winner)
+            print("Reason: " + board.get_reason())
+            print("===================")
+            break
 #training
 # board = Board(60, 9, False)
 # ratios = []
