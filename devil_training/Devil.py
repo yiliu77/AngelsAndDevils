@@ -23,6 +23,7 @@ class Devil:
 
     def reset(self):
         self.blocks = []
+        self.consciousness.reset()
 
     def god_place(self, place):
         self.blocks.append(place)
@@ -37,7 +38,6 @@ class Devil:
             self.consciousness.train(True)
         if has_won is "angel":
             self.consciousness.train(False)
-        self.consciousness.reset()
 
     def get_wih(self):
         return self.consciousness.wih

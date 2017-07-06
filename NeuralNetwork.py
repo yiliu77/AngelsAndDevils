@@ -18,12 +18,6 @@ class NeuralNetwork:
         self.hidden_outputs = []
         self.final_outputs = []
 
-    def reset(self):
-        self.inputs = []
-        self.hidden_outputs = []
-        self.final_outputs = []
-
-    # train based on previous decisions
     def train(self, has_won):
         who_update = np.zeros_like(self.who)
         wih_update = np.zeros_like(self.wih)
@@ -64,3 +58,8 @@ class NeuralNetwork:
 
     def return_who(self):
         return self.who
+
+    def reset(self):
+        self.inputs = []
+        self.hidden_outputs = []
+        self.final_outputs = []

@@ -6,29 +6,17 @@ from Angel import Angel
 
 
 class Board:
-    def __init__(self, margin, sides, display=True, angel_train = False):
+    def __init__(self, margin, sides, angel_trained=False, devil_trained=False):
         self.margin = margin
         self.sides = sides
         self.side_length = self.sides * self.margin
 
-        self.display = display
-        if display:
-            pygame.init()
-            self.window = pygame.display.set_mode((self.side_length, self.side_length))
-            self.canvas = self.window.copy()
+        self.angel = Angel(self.sides, angel_trained)
+        self.devil = Devil(self.sides, devil_trained)
 
-            self.black = (0, 0, 0, 255)
-            self.white = (255, 255, 255)
-            self.gray = (220, 220, 220)
-            self.silver = (192, 192, 192)
-            self.red = (255, 0, 0)
-
-        self.angel = Angel(self.sides, angel_train)
-
-
-        self.devil = Devil(self.sides)
         self.winner = None
         self.reason = None
+        self.turn = True
 
     def reset(self):
         self.angel.reset()
@@ -70,42 +58,6 @@ class Board:
             if len(self.devil.get_blocks()) != len(set(self.devil.get_blocks())):
                 self.winner = "angel"
                 self.reason = "repeat place"
-
-    def players_play(self):
-        self.window.fill(self.white)
-
-        # grid
-        for side in range(0, self.side_length, self.margin):
-            pygame.draw.lines(self.window, self.gray, False, ((side, 0), (side, self.side_length)))
-            pygame.draw.lines(self.window, self.gray, False, ((0, side), (self.side_length, side)))
-
-        # angel
-        if self.winner is None:
-            pygame.draw.rect(self.window, self.silver, self.rect_equ(self.angel.get_position()))
-
-        # devil barriers
-        for devil in self.devil.get_blocks():
-            pygame.draw.rect(self.window, self.red, (self.rect_equ(devil)))
-
-        for e in pygame.event.get():
-            if e.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                x_box = int(pos[0] / self.margin)
-                y_box = int(pos[1] / self.margin)
-                box_index = x_box + self.sides * y_box
-                self.devil.god_place(box_index)
-
-            if e.type == pygame.KEYDOWN:
-                if e.key == K_RIGHT:
-                    self.angel.god_move(1)
-                if e.key == K_LEFT:
-                    self.angel.god_move(-1)
-                if e.key == K_UP:
-                    self.angel.god_move(-self.sides)
-                if e.key == K_DOWN:
-                    self.angel.god_move(self.sides)
-        self.check_winner("angel")
-        pygame.display.update()
 
     def angels_turn(self):
         self.angel.angel_move(self.representation())
@@ -150,28 +102,48 @@ class Board:
     def display_board(self):
         self.window.fill(self.white)
 
-        # grid
         for side in range(0, self.side_length, self.margin):
-            pygame.draw.lines(self.window, self.gray, False, ((side, 0), (side, self.side_length)))
-            pygame.draw.lines(self.window, self.gray, False, ((0, side), (self.side_length, side)))
+            pygame.draw.lines(self.window, self.black, False, ((side, 0), (side, self.side_length)))
+            pygame.draw.lines(self.window, self.black, False, ((0, side), (self.side_length, side)))
 
-        # angel
         if self.winner is None:
             pygame.draw.rect(self.window, self.silver, self.rect_equ(self.angel.get_position()))
 
-        # devil barriers
         for devil in self.devil.get_blocks():
             pygame.draw.rect(self.window, self.red, (self.rect_equ(devil)))
 
         pygame.display.update()
 
-    def button_pressed(self):
+    def players_play(self):
         for e in pygame.event.get():
-            if e.type == pygame.MOUSEBUTTONUP:
+            if e.type == pygame.MOUSEBUTTONUP and not self.turn:
                 pos = pygame.mouse.get_pos()
                 x_box = int(pos[0] / self.margin)
                 y_box = int(pos[1] / self.margin)
                 box_index = x_box + self.sides * y_box
                 self.devil.god_place(box_index)
+                self.turn = not self.turn
+
+            if e.type == pygame.KEYDOWN and self.turn:
+                if e.key == K_RIGHT:
+                    self.angel.god_move(1)
+                    self.turn = not self.turn
+                if e.key == K_LEFT:
+                    self.angel.god_move(-1)
+                    self.turn = not self.turn
+                if e.key == K_UP:
+                    self.angel.god_move(-self.sides)
+                    self.turn = not self.turn
+                if e.key == K_DOWN:
+                    self.angel.god_move(self.sides)
+                    self.turn = not self.turn
+
+
+            if e.type == pygame.QUIT:
+                pygame.quit()
                 return True
+
+        self.check_winner("angel")
+        self.check_winner("devil")
+        pygame.display.update()
         return False

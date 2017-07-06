@@ -37,10 +37,10 @@ plt.show()
 np.savetxt('Files/devil_who.csv', board.get_devil().get_who(), delimiter=',')
 np.savetxt('Files/devil_wih.csv', board.get_devil().get_wih(), delimiter=',')
 
-board.init_draw()
-board.display_board()
-board.angels_turn()
-while True:
-    board.display_board()
+# board.init_draw()
+# board.display_board()
+# board.angels_turn()
+# while True:
+#     board.display_board()
 
 

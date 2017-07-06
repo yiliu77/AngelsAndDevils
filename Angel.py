@@ -4,7 +4,7 @@ from NeuralNetwork import NeuralNetwork
 
 
 class Angel:
-    def __init__(self, sides, trained = False):
+    def __init__(self, sides, trained=False):
         self.sides = sides
         self.position = int(sides / 2) * sides + int(sides / 2)
         self.moves = []
@@ -15,15 +15,12 @@ class Angel:
         learning_rate = 0.2
 
         if not trained:
-            weight_wih = np.random.randn(hidden_nodes,
-                                         int(input_nodes)) \
-                         / np.sqrt(input_nodes)
+            weight_wih = np.random.randn(hidden_nodes, int(input_nodes)) / np.sqrt(input_nodes)
             weight_who = np.random.randn(output_nodes, hidden_nodes) / np.sqrt(hidden_nodes)
         else:
             angel_who = open("Files/angel_who.csv", 'r')
             angel_who_read = angel_who.readlines()
             angel_who.close()
-
             angel_wih = open("Files/angel_wih.csv", 'r')
             angel_wih_read = angel_wih.readlines()
             angel_wih.close()
@@ -46,24 +43,6 @@ class Angel:
         self.moves = []
         self.consciousness.reset()
 
-    # only for player mode
-    def god_move(self, move):
-        if move == -self.sides:
-            self.moves.append(0)
-        if move == 1:
-            self.moves.append(1)
-        if move == self.sides:
-            self.moves.append(2)
-        if move == -1:
-            self.moves.append(3)
-        self.position += move
-
-    def get_wih(self):
-        return self.consciousness.wih
-
-    def get_who(self):
-        return self.consciousness.who
-
     # only for AI mode
     def angel_move(self, board):
         turn = np.argmax(self.consciousness.query(board))
@@ -83,4 +62,21 @@ class Angel:
             self.consciousness.train(False)
         if has_won is "angel":
             self.consciousness.train(True)
-        self.consciousness.reset()
+
+    # only for player mode
+    def god_move(self, move):
+        if move == -self.sides:
+            self.moves.append(0)
+        if move == 1:
+            self.moves.append(1)
+        if move == self.sides:
+            self.moves.append(2)
+        if move == -1:
+            self.moves.append(3)
+        self.position += move
+
+    def get_wih(self):
+        return self.consciousness.wih
+
+    def get_who(self):
+        return self.consciousness.who
