@@ -1,9 +1,8 @@
 from matplotlib import pyplot as plt
-from scipy import stats
-import numpy as np
 from Board import Board
+import sys
 
-print("1: Player vs Player\n2: Player vs Angel \n3: Player vs Devil\n")
+print("1: Player vs Player\n2: Player vs Angel \n3: Player vs Devil\n4: Debug \n5: Train Both Agents\n")
 selection = input("Select Option: ")
 
 if selection == "1":
@@ -15,15 +14,14 @@ if selection == "1":
         winner = board.get_winner()
         if winner is not None or done:
             print("===================")
-            print("Winner: " + winner)
-            print("Reason: " + board.get_reason())
+            print("Winner: " + str(winner))
+            print("Reason: " + str(board.get_reason()))
             print("===================")
             break
 
 if selection == "2":
     board = Board(60, 9, True, False)
     board.init_draw()
-    board.angels_turn()
     while True:
         board.display_board()
         pressed = board.god_as_devil()
@@ -40,6 +38,7 @@ if selection == "2":
 if selection == "3":
     board = Board(60, 9, False, True)
     board.init_draw()
+    board.devils_turn()
     while True:
         board.display_board()
         move = board.god_as_angel()
@@ -52,6 +51,48 @@ if selection == "3":
             print("Reason: " + board.get_reason())
             print("===================")
             break
+
+if selection == "4":
+    board = Board(60, 9)
+    board.init_draw()
+    while True:
+        board.display_board()
+        done = board.debug()
+        if done:
+            break
+
+if selection == "5":
+    if not input("Password: ") == "AIs Are Amazing":
+        sys.exit("Incorrect Password")
+    board = Board(60, 9, True, True)
+
+    ratios = []
+    winners = {"angel": 0, "devil": 0}
+    winner = None
+
+    for i in range(9999999):
+        while winner is None:
+            board.devils_turn()
+            board.angels_turn()
+            winner = board.get_winner()
+
+        winners[winner] += 1
+        if i % 100 == 0 and not i == 0:
+            print(i)
+            print(board.get_devil().get_blocks())
+            print(board.get_angel().moves)
+            print(winners)
+            print(board.get_reason())
+            ratios.append(winners["devil"] / winners["angel"])
+            winners = {"angel": 0, "devil": 0}
+
+        board.train_angel()
+        board.train_devil()
+        board.reset()
+        winner = None
+
+    plt.scatter([i for i in range(len(ratios))], ratios)
+    plt.show()
 #training
 # board = Board(60, 9, False)
 # ratios = []

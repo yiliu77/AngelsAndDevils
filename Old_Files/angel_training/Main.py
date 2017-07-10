@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from scipy import stats
-
+import numpy as np
 from Board import Board
 
 # board = Board(60, 9, True)
@@ -30,9 +30,10 @@ for i in range(800000):
     board.reset()
     winner = None
 plt.scatter([i for i in range(len(ratios))],ratios)
-slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(ratios))],ratios)
-print(slope)
 plt.show()
+
+np.savetxt('Files/angel_who.csv', board.get_angel().consciousness.who, delimiter=',')
+np.savetxt('Files/angel_wih.csv', board.get_angel().consciousness.wih, delimiter=',')
 
 board.init_draw()
 board.display_board()

@@ -123,6 +123,8 @@ class Board:
                 self.devil.god_place(box_index)
                 self.turn = not self.turn
 
+                self.check_winner("devil")
+
             if e.type == pygame.KEYDOWN and self.turn:
                 if e.key == K_RIGHT:
                     self.angel.god_move(1)
@@ -137,12 +139,36 @@ class Board:
                     self.angel.god_move(self.sides)
                     self.turn = not self.turn
 
+                self.check_winner("angel")
+
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return True
+        pygame.display.update()
+        return False
 
-        self.check_winner("angel")
-        self.check_winner("devil")
+    def debug(self):
+        for e in pygame.event.get():
+            if e.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                x_box = int(pos[0] / self.margin)
+                y_box = int(pos[1] / self.margin)
+                box_index = x_box + self.sides * y_box
+                self.devil.god_place(box_index)
+
+            if e.type == pygame.KEYDOWN:
+                if e.key == K_RIGHT:
+                    self.angel.god_move(1)
+                if e.key == K_LEFT:
+                    self.angel.god_move(-1)
+                if e.key == K_UP:
+                    self.angel.god_move(-self.sides)
+                if e.key == K_DOWN:
+                    self.angel.god_move(self.sides)
+
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                return True
         pygame.display.update()
         return False
 

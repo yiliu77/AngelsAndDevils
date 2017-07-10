@@ -1,8 +1,5 @@
 import numpy as np
 from Old_Files.devil_training.NeuralNetwork import NeuralNetwork
-import numpy as np
-
-from Old_Files.devil_training.NeuralNetwork import NeuralNetwork
 
 
 class Devil:
@@ -19,7 +16,7 @@ class Devil:
                      / np.sqrt(input_nodes)
         weight_who = np.random.randn(output_nodes, hidden_nodes) / np.sqrt(hidden_nodes)
         self.consciousness = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, weight_wih, weight_who,
-                                           learning_rate)
+                                           learning_rate, sides)
 
     def get_blocks(self):
         return self.blocks
@@ -31,8 +28,8 @@ class Devil:
     def god_place(self, place):
         self.blocks.append(place)
 
-    def place_block(self, board):
-        turn = np.argmax(self.consciousness.query(board))
+    def place_block(self, board, angel_pos):
+        turn = np.argmax(self.consciousness.query(board, angel_pos))
         self.blocks.append(turn)
         return
 

@@ -44,3 +44,15 @@ class Angel:
         else:
             self.position += -self.sides
         self.moves.append(turn)
+
+    def angel_dumb(self, board, devils):
+        turn = random.randrange(0, 4)
+        if turn == 0:
+            self.position += -self.sides
+        elif turn == 1:
+            self.position += 1
+        elif turn == 2:
+            self.position += self.sides
+        elif turn == 3:
+            self.position += -1
+        self.moves.append(turn)

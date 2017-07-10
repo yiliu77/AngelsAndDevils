@@ -1,5 +1,5 @@
 import pygame
-from devil_training.Angel import Angel
+from Old_Files.devil_training.Angel import Angel
 from pygame.locals import *
 
 from Old_Files.devil_training.Devil import Devil
@@ -26,6 +26,7 @@ class Board:
         self.angel = Angel(self.sides)
         self.devil = Devil(self.sides)
         self.winner = None
+        self.reason = None
 
     def reset(self):
         self.angel.reset()
@@ -43,21 +44,30 @@ class Board:
                 board_rep.append(0.0)
         return board_rep
 
+    def get_reason(self):
+        return self.reason
+
     def check_winner(self, current_player):
         if current_player == "angel":
             if self.angel.get_position() in self.devil.get_blocks():
                 self.winner = "devil"
+                self.reason = "move into devil block"
             elif self.angel.get_last_move() == 3 and self.angel.get_position() % self.sides == self.sides - 1:
                 self.winner = "angel"
+                self.reason = "angel escaped"
             elif self.angel.get_last_move() == 1 and self.angel.get_position() % self.sides == 0:
                 self.winner = "angel"
+                self.reason = "angel escaped"
             elif self.angel.get_position() < 0 or self.angel.get_position() > self.sides ** 2 - 1:
                 self.winner = "angel"
+                self.reason = "angel escaped"
         if current_player == "devil":
             if self.angel.get_position() in self.devil.get_blocks():
                 self.winner = "angel"
+                self.reason = "place on angel"
             if len(self.devil.get_blocks()) != len(set(self.devil.get_blocks())):
                 self.winner = "angel"
+                self.reason = "repeat place"
 
 
     def players_play(self):
@@ -100,8 +110,12 @@ class Board:
         self.angel.angel_move(self.representation(), self.devil.get_blocks())
         self.check_winner("angel")
 
+    def dumb_angels_turn(self):
+        self.angel.angel_dumb(self.representation(), self.devil.get_blocks())
+        self.check_winner("angel")
+
     def devils_turn(self):
-        self.devil.place_block(self.representation())
+        self.devil.place_block(self.representation(), self.angel.get_position())
         self.check_winner("devil")
 
     def train_devil(self):

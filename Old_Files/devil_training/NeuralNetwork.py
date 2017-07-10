@@ -3,10 +3,12 @@ import scipy.special
 
 
 class NeuralNetwork:
-    def __init__(self, input_node, hidden_node, output_node, initial_wih, initial_who, learn_rate):
+    def __init__(self, input_node, hidden_node, output_node, initial_wih, initial_who, learn_rate, sides):
         self.i_nodes = input_node
         self.h_nodes = hidden_node
         self.o_nodes = output_node
+        self.sides = sides
+        self.angel_pos = []
 
         self.wih = initial_wih
         self.who = initial_who
@@ -30,7 +32,28 @@ class NeuralNetwork:
         for k in range(len(self.inputs)):
             move = np.argmax(self.final_outputs[k])
 
-            target_array = 0.5 * np.ones((self.o_nodes, 1))
+            angel_pos = self.angel_pos[k]
+            target_array = 0.4 * np.ones((self.o_nodes , 1))
+            # target_array = self.final_outputs[k]
+            # if angel_pos - self.sides > 0:
+            #     target_array[angel_pos - self.sides] = 0.5
+            # if angel_pos - self.sides - 1 > 0:
+            #     target_array[angel_pos - self.sides - 1] = 0.5
+            # if angel_pos - self.sides + 1 > 0:
+            #     target_array[angel_pos - self.sides + 1] = 0.5
+            #
+            # if angel_pos + self.sides < self.sides ** 2:
+            #     target_array[angel_pos + self.sides] = 0.5
+            # if angel_pos + self.sides - 1 < self.sides ** 2:
+            #     target_array[angel_pos + self.sides - 1] = 0.5
+            # if angel_pos + self.sides + 1 < self.sides ** 2:
+            #     target_array[angel_pos + self.sides + 1] = 0.5
+            #
+            # if angel_pos + 1 < self.sides ** 2:
+            #     target_array[angel_pos + 1] = 0.5
+            # if angel_pos - 1 > 0:
+            #     target_array[angel_pos - 1] = 0.5
+
             target_array[move] = 0.99 if has_won else 0.01
 
             output_errors = target_array - np.array(self.final_outputs[k])
@@ -52,7 +75,7 @@ class NeuralNetwork:
         pass
 
     # get AI decision
-    def query(self, input_list):
+    def query(self, input_list, angel_pos):
         input_list = np.array(input_list, ndmin=2).T
         self.inputs.append(input_list)
 
@@ -64,6 +87,7 @@ class NeuralNetwork:
         final_outputs = self.sigmoid(final_inputs)
         self.final_outputs.append(final_outputs)
 
+        self.angel_pos.append(angel_pos)
         return final_outputs
 
     def return_wih(self):

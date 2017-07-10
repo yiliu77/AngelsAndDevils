@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from scipy import stats
 import numpy as np
-from devil_training.Board import Board
+from Old_Files.devil_training.Board import Board
 
 # board = Board(60, 9, True)
 # while True:
@@ -17,20 +17,47 @@ winner = None
 for i in range(800000):
     while winner is None:
         board.devils_turn()
-        board.angels_turn()
+        board.dumb_angels_turn()
         winner = board.get_winner()
     winners[winner] += 1
     if not i == 0 and i % 100 == 0 and not winners["angel"] == 0:
         print(i)
+        print(board.get_angel().moves)
         print(board.get_devil().get_blocks())
         print(winners)
+        print(board.get_reason())
         ratios.append(winners["devil"] / winners["angel"])
         winners = {"angel": 0, "devil": 0}
     board.train_devil()
     board.reset()
     winner = None
-plt.scatter([i for i in range(len(ratios))],ratios)
-slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(ratios))],ratios)
+plt.scatter([i for i in range(len(ratios))], ratios)
+slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(ratios))], ratios)
+print(slope)
+plt.show()
+
+ratios = []
+winners = {"angel": 0, "devil": 0}
+winner = None
+for i in range(800000):
+    while winner is None:
+        board.devils_turn()
+        board.angels_turn()
+        winner = board.get_winner()
+    winners[winner] += 1
+    if not i == 0 and i % 100 == 0 and not winners["angel"] == 0:
+        print(i)
+        print(board.get_angel().moves)
+        print(board.get_devil().get_blocks())
+        print(winners)
+        print(board.get_reason())
+        ratios.append(winners["devil"] / winners["angel"])
+        winners = {"angel": 0, "devil": 0}
+    board.train_devil()
+    board.reset()
+    winner = None
+plt.scatter([i for i in range(len(ratios))], ratios)
+slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(ratios))], ratios)
 print(slope)
 plt.show()
 
@@ -42,5 +69,3 @@ np.savetxt('Files/devil_wih.csv', board.get_devil().get_wih(), delimiter=',')
 # board.angels_turn()
 # while True:
 #     board.display_board()
-
-
