@@ -67,6 +67,9 @@ class Board:
         self.devil.place_block(self.representation())
         self.check_winner("devil")
 
+    def devils_turn_random(self):
+        self.devil.random_place_block(self.angel.position)
+
     def train_angel(self):
         self.angel.train(self.winner)
 

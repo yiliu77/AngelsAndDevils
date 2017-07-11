@@ -1,5 +1,6 @@
 from NeuralNetwork import NeuralNetwork
 import numpy as np
+import random
 
 
 class Devil:
@@ -25,7 +26,6 @@ class Devil:
 
             weight_wih = np.asfarray([line.split(',') for line in devil_wih_read])
             weight_who = np.asfarray([line.split(',') for line in devil_who_read])
-
 
         self.consciousness = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, weight_wih, weight_who,
                                            learning_rate)
@@ -56,3 +56,19 @@ class Devil:
 
     def get_who(self):
         return self.consciousness.who
+
+    def random_place_block(self, angel_pos):
+        random_dir = random.randrange(0, 4)
+        random_place = -1
+        while random_place < 0 or random_place >= self.sides ** 2:
+            if random_dir == 0:
+                random_place = angel_pos - self.sides
+            if random_dir == 1:
+                random_place = angel_pos + 1
+            if random_dir == 2:
+                random_place = angel_pos + self.sides
+            if random_dir == 3:
+                random_place = angel_pos - 1
+            random_dir = random.randrange(0, 4)
+        self.blocks.append(random_place)
+        return
