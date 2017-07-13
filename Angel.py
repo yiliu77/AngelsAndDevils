@@ -1,5 +1,4 @@
 import numpy as np
-
 from NeuralNetwork import NeuralNetwork
 
 
@@ -12,7 +11,7 @@ class Angel:
         input_nodes = int(sides ** 2)
         hidden_nodes = 140
         output_nodes = 4
-        learning_rate = 0.2
+        learning_rate = 0.1
 
         if not trained:
             weight_wih = np.random.randn(hidden_nodes, int(input_nodes)) / np.sqrt(input_nodes)
@@ -56,6 +55,30 @@ class Angel:
             self.position += -1
         self.moves.append(turn)
 
+    def smart_angel(self, board, blocks):
+        turns  = self.consciousness.query(board)
+        dict_turn = {}
+        for i in range(4):
+            dict_turn[i] = turns[i][0]
+        for dict in sorted(dict_turn.items(), key=lambda x: -x[1]):
+            if dict[0] == 0 and not self.position - self.sides in blocks:
+                self.position += -self.sides
+                self.moves.append(dict[0])
+                return
+            if dict[0] == 1 and not self.position + 1 in blocks:
+                self.position += 1
+                self.moves.append(dict[0])
+                return
+            if dict[0] == 2 and not self.position + self.sides in blocks:
+                self.position += self.sides
+                self.moves.append(dict[0])
+                return
+            if dict[0] == 3 and not self.position - 1 in blocks:
+                self.position += -1
+                self.moves.append(dict[0])
+                return
+        self.position -= self.sides
+        self.moves.append(0)
     # train angel
     def train(self, has_won):
         if has_won is "devil":

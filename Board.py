@@ -63,6 +63,10 @@ class Board:
         self.angel.angel_move(self.representation())
         self.check_winner("angel")
 
+    def smart_angel(self):
+        self.angel.smart_angel(self.representation(), self.devil.get_blocks())
+        self.check_winner("angel")
+
     def devils_turn(self):
         self.devil.place_block(self.representation())
         self.check_winner("devil")
@@ -182,6 +186,9 @@ class Board:
                 x_box = int(pos[0] / self.margin)
                 y_box = int(pos[1] / self.margin)
                 box_index = x_box + self.sides * y_box
+
+                if box_index == self.angel.get_position():
+                    return False
                 self.devil.god_place(box_index)
                 return True
         return False

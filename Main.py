@@ -7,7 +7,7 @@ print("1: Player vs Player\n2: Player vs Angel \n3: Player vs Devil\n4: Debug \n
 selection = input("Select Option: ")
 
 if selection == "1":
-    board = Board(60, 9)
+    board = Board(70, 9)
     board.init_draw()
     while True:
         board.display_board()
@@ -21,19 +21,23 @@ if selection == "1":
             break
 
 if selection == "2":
-    board = Board(60, 9, True, False)
+    board = Board(70, 9, True, False)
     board.init_draw()
     while True:
         board.display_board()
         pressed = board.god_as_devil()
         winner = board.get_winner()
         if pressed is True:
-            board.angels_turn()
+            board.smart_angel()
         if winner is not None:
             print("===================")
             print("Winner: " + winner)
             print("Reason: " + board.get_reason())
             print("===================")
+            for j in range(5):
+                board.train_angel()
+            np.savetxt('Files/angel_who.csv', board.get_angel().consciousness.who, delimiter=',')
+            np.savetxt('Files/angel_wih.csv', board.get_angel().consciousness.wih, delimiter=',')
             break
 
 if selection == "3":
@@ -73,7 +77,7 @@ if selection == "5":
     winners = {"angel": 0, "devil": 0}
     winner = None
 
-    for i in range(9999999):
+    for i in range(499000):
         while winner is None:
             board.devils_turn_random()
             board.angels_turn()
@@ -126,7 +130,6 @@ if selection == "5":
     #     winner = None
     # plt.scatter([i for i in range(len(ratios))], ratios)
     # plt.show()
-
 
     # np.savetxt('Files/angel_who.csv', board.get_angel().get_who(), delimiter=',')
     # np.savetxt('Files/angel_wih.csv', board.get_angel().get_wih(), delimiter=',')
