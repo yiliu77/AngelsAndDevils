@@ -63,12 +63,12 @@ class Devil:
         random_dir = random.randrange(0, 8)
         random_place = -1
 
-        check_layer = self.check_on_out_layer(angel_pos)
-        new_devil_pos = (angel_pos + check_layer)
-        if not check_layer == 0 and 0 <= new_devil_pos < self.sides ** 2 \
-                and new_devil_pos not in self.blocks:
-            self.blocks.append(new_devil_pos)
-            return
+        # check_layer = self.check_on_out_layer(angel_pos)
+        # new_devil_pos = (angel_pos + check_layer)
+        # if not check_layer == 0 and 0 <= new_devil_pos < self.sides ** 2 \
+        #         and new_devil_pos not in self.blocks:
+        #     self.blocks.append(new_devil_pos)
+        #     return
 
         # for pos in self.determine_quad(angel_pos):
         #     if (angel_pos + pos) >= 0 and (angel_pos + pos) < self.sides ** 2 and (angel_pos + pos) \

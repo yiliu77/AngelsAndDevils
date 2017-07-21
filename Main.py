@@ -34,10 +34,7 @@ if selection == "2":
             print("Winner: " + winner)
             print("Reason: " + board.get_reason())
             print("===================")
-            for j in range(5):
-                board.train_angel()
-            np.savetxt('Files/angel_who.csv', board.get_angel().consciousness.who, delimiter=',')
-            np.savetxt('Files/angel_wih.csv', board.get_angel().consciousness.wih, delimiter=',')
+            board.train_angel()
             break
 
 if selection == "3":
@@ -77,7 +74,7 @@ if selection == "5":
     winners = {"angel": 0, "devil": 0}
     winner = None
 
-    for i in range(499000):
+    for i in range(35000):
         while winner is None:
             board.devils_turn_random()
             board.angels_turn()
